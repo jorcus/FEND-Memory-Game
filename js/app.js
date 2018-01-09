@@ -47,46 +47,57 @@ function shuffle(array) {
 // Append the <li> after shuffle the card.
 function add_list(list) {
     "use strict";
-	$("ul#cards").children().remove("li"); // RESET THE GAME
+    $("ul#cards").children().remove("li"); // RESET THE GAME
     for (var i = 0; i < list.length; i++) {
         $("#cards").append("<li class='card'><i class='fa " + list[i] + "'></i></li>");
     }
-	
+
 }
 
+function sleep(miliseconds) {
+    "use strict";
+    var currentTime = new Date().getTime();
+    while (currentTime + miliseconds >= new Date().getTime()) {}
+}
+
+function disable() {
+    "use strict";
+    Array.prototype.filter.call(cards, function(card) {
+        card.classList.add('disabled');
+    });
+}
 
 function click_card() {
     "use strict";
-	
+
     var previous_card_selector = "";
     var previous_card_icon = "";
-	//var move_count = 0;
+    //var move_count = 0;
+    var card_selected = false;
     $(".card").on("click", function() {
-
         var current_card = $(this).attr("class");
         var current_card_icon = $(this).children().attr("class");
 
-
         if (current_card === "card") {
-            if (current_card_icon === previous_card_icon) {
+            if ((current_card_icon === previous_card_icon) && (card_selected === true)) {
                 $(this).addClass("match");
                 previous_card_selector.removeClass("open show").addClass("match");
+                card_selected = false;
 
+            } else if ((card_selected === true)) {
+                $(this).addClass("open show");
+				setTimeout(function(){ $(".open.show").removeClass("open show"); }, 3000);
+                
+
+                card_selected = false;
 
             } else {
                 $(this).addClass("open show");
                 previous_card_icon = current_card_icon;
                 previous_card_selector = $(this);
+                card_selected = true;
             }
-        } else {
-            $(this).removeClass("open show");
-            previous_card_icon = current_card_icon;
-            previous_card_selector = $(this);
         }
-
-
-
-
     });
 }
 
@@ -101,11 +112,11 @@ function startGame() {
 
 
 startGame();
-$(".fa-repeat").click(function(){
-	"use strict";
+$(".fa-repeat").click(function() {
+    "use strict";
     startGame();
 });
-	
+
 
 
 /*
