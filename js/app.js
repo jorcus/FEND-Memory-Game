@@ -44,6 +44,7 @@
             $("#cards").append("<li class='card'><i class='fa " + list[i] + "'></i></li>");
         }
     }
+
     function reset_game(the_timer) {
         $(".fa-repeat").click(function() {
             $("ul#cards").children().remove("li"); // RESET CRAD
@@ -65,7 +66,7 @@
 
             setTimeout(function() {
                 alert("Congratulations! You've won the game!");
-                alert("You've made " + moves + " moves in this game! Your ratings are " + $(".fa-star").length + " out of 3-star ratings!");
+                alert("You've made " + moves + " moves and " + finished_time + " sec to finish this game!\nYour ratings are " + $(".fa-star").length + " out of 3-star ratings!");
                 if (confirm("Do you want to play again?") === true) {
                     $(".fa-repeat").click(); // Click reset
                 } else {
@@ -135,6 +136,7 @@
                     previous_card_icon = current_card_icon;
                     previous_card_selector = $(this);
                     card_selected = true;
+                }
 
                 // Updating move count to web pages
                 $(".moves").text(move_count);
