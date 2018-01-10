@@ -51,12 +51,8 @@ function score_ratings(moves, matched, the_timer,finished_time) {
     "use strict";
     var all_stars = $(".stars");
     if (matched === 8) {
-
-		console.log(finished_time);
 		$("#timer").text(finished_time);
         clearInterval(the_timer);
-        
-		
 		setTimeout(function(){ alert("Congratulations! You've won the game!"); }, 1500);
         
     } else {
