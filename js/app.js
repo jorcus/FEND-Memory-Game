@@ -40,7 +40,6 @@ function shuffle(array) {
 // Loop through each card and create its HTML <li> after shuffle the card.
 function add_list(list) {
     "use strict";
-    $("ul#cards").children().remove("li"); // FOR RESET THE GAME
     for (var i = 0; i < list.length; i++) {
         $("#cards").append("<li class='card'><i class='fa " + list[i] + "'></i></li>");
     }
@@ -48,50 +47,72 @@ function add_list(list) {
 }
 
 
-function score_ratings(moves) {
+function score_ratings(moves, matched, the_timer,finished_time) {
     "use strict";
     var all_stars = $(".stars");
-    if ((moves > 12) && (moves <= 15)) {
-        all_stars.children().remove("li");
-        all_stars.append("<li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li><li><i class='fa fa-star-o'></i></li>"); // Two stars
+    if (matched === 1) {
 
-    } else if (moves > 17) {
-        all_stars.children().remove("li");
-        all_stars.append("<li><i class='fa fa-star'></i></li><li><i class='fa fa-star-o'></i></li><li><i class='fa fa-star-o'></i></li>"); // A star
+		console.log(finished_time);
+		$("#timer").text(finished_time);
+        clearInterval(the_timer);
+        
+		
+		setTimeout(function(){ alert("Congratulations! You've won the game!"); }, 1500);
+        
+    } else {
+        if ((moves > 12) && (moves <= 15)) {
+            all_stars.children().remove("li");
+            all_stars.append("<li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li><li><i class='fa fa-star-o'></i></li>"); // Two stars
+
+        } else if (moves > 17) {
+            all_stars.children().remove("li");
+            all_stars.append("<li><i class='fa fa-star'></i></li><li><i class='fa fa-star-o'></i></li><li><i class='fa fa-star-o'></i></li>"); // A star
+        }
     }
-
-
 }
 
+
+function reset_game(the_timer) {
+    "use strict";
+    $(".fa-repeat").click(function() {
+		$("ul#cards").children().remove("li"); // RESET CRAD
+        $(".stars").children().remove("li");
+        $(".stars").append("<li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li>"); // RESET stars
+        $(".moves").text("0"); // RESET Moves
+        clearInterval(the_timer);
+        $("#timer").text("0.000"); // RESET timer
+        startGame();
+    });
+}
 
 function startGame() {
     "use strict";
     list = shuffle(list);
     add_list(list);
 
-
+	// Initial parameters
     var previous_card_selector = "";
     var previous_card_icon = "";
     var move_count = 0;
     var card_selected = false;
     var timer = 0;
     var the_timer;
-
+    var matched = 0;
+	var finished_time = 0;
 
     $(".card").on("click", function() {
-		timer++;  // This will activate the timer/stopwatch
+        timer++; // This will activate the timer/stopwatch
         var current_card = $(this).attr("class");
         var current_card_icon = $(this).children().attr("class");
 
-
         // Card matching logics and set up the event listener for a card. If a card is clicked
         if (current_card === "card") {
-
             if ((current_card_icon === previous_card_icon) && (card_selected === true)) {
                 //if both cards matched, lock the cards in the open position 
                 $(this).addClass("match");
                 previous_card_selector.removeClass("open show").addClass("match");
                 card_selected = false;
+                matched++;
                 move_count++;
 
             } else if ((card_selected === true)) {
@@ -117,45 +138,24 @@ function startGame() {
             $(".moves").text(move_count);
 
             // Ratings from 3 stars to 1 stars
-            score_ratings(move_count);
+            score_ratings(move_count, matched, the_timer,finished_time);
 
-
-			// TIMER function
-			if (timer === 1) {
+            // TIMER function
+            if (timer === 1) {
                 var startTime = Date.now();
                 the_timer = setInterval(function() {
                     var elapsedTime = Date.now() - startTime;
-                    $("#timer").text((elapsedTime / 1000).toFixed(3));
+					finished_time = (elapsedTime / 1000).toFixed(3);
+                    $("#timer").text(finished_time);
                 }, 44);
 
-            }  
+            }
 
-			
-			// RESET FUNCTION 
-            $(".fa-repeat").click(function() {
-				    $(".stars").children().remove("li");
-    $(".stars").append("<li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li><li><i class='fa fa-star'></i></li>"); // Full stars
-    $(".moves").text(move_count); // FOR RESET THE GAME
-					clearInterval(the_timer);
-	$("#timer").text("0.000");
-                startGame();
-            });
+            // RESET FUNCTION 
+            reset_game(the_timer);
         }
 
     });
-
-
 }
 
-
-
-
 startGame();
-
-
-
-
-/*
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
-     + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
