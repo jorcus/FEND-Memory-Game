@@ -112,3 +112,9 @@ h1 {
 .deck .card.disabled {
 	pointer-events: none;
 }
+
+
+#timer {
+    margin: auto;
+	text-align: center;
+}
