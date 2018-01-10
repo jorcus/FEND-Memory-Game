@@ -1,5 +1,5 @@
 # Memory Game Project
-
+[PLAY NOW](https://jorcus.github.io/FEND-Memory-Game/)
 ## Table of Contents
 
 * [Instructions](#instructions)
